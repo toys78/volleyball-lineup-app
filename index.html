@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>스타팅 라인업</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --navy:#0a1628; --blue:#1a4fa0; --gold:#b8760e; }
+body { background:#111; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:16px; }
+
+.wrap { background:var(--navy); border-radius:12px; font-family:'Segoe UI',sans-serif; position:relative; overflow:hidden; width:100%; max-width:500px; }
+.court-bg { position:absolute; top:0; left:0; right:0; bottom:52px; pointer-events:none; }
+.court-bg svg { width:100%; height:100%; }
+
+.header { position:relative; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; padding:20px 20px 10px; }
+.title-block h1 { font-size:28px; font-weight:700; color:#fff; letter-spacing:-0.5px; line-height:1.1; }
+.title-block .sub { font-size:11px; color:#5b9bd5; letter-spacing:0.14em; margin-top:3px; }
+.badge-9 { display:inline-block; background:var(--blue); color:#fff; font-size:10px; padding:3px 9px; border-radius:4px; margin-top:5px; }
+.logo-wrap { position:relative; cursor:pointer; }
+.logo-wrap:hover .logo-edit-hint { opacity:1; }
+.logo { width:68px; height:68px; background:#1a3a6e; border-radius:50%; border:2px solid #3a6abf; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; gap:1px; overflow:hidden; flex-shrink:0; }
+.logo img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.logo-text { display:flex; flex-direction:column; align-items:center; gap:1px; }
+.logo-edit-hint { position:absolute; inset:0; border-radius:50%; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; font-size:18px; opacity:0; transition:opacity 0.2s; pointer-events:none; }
+
+.court-area { position:relative; z-index:10; display:flex; flex-direction:column; gap:10px; padding:0 14px 12px; }
+.row { display:flex; justify-content:center; gap:10px; }
+
+.player-card { width:128px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:8px; overflow:hidden; display:flex; flex-direction:column; cursor:pointer; transition:border-color 0.2s,transform 0.15s; }
+.player-card:hover { border-color:rgba(255,255,255,0.4); transform:translateY(-2px); }
+.card-top { display:flex; align-items:center; justify-content:space-between; padding:5px 7px 3px; }
+.pos-badge { font-size:10px; font-weight:700; padding:2px 6px; border-radius:3px; background:var(--blue); color:#7ab8f5; }
+.pos-badge.lib { background:#fff; color:var(--blue); }
+.pos-name { font-size:8px; color:rgba(255,255,255,0.5); text-align:right; line-height:1.4; }
+.photo-area { height:82px; background:rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.photo-area img { width:100%; height:100%; object-fit:cover; object-position:top; position:absolute; inset:0; }
+.photo-placeholder { display:flex; flex-direction:column; align-items:center; gap:3px; }
+.photo-placeholder .big-num { font-size:36px; font-weight:700; color:rgba(255,255,255,0.12); line-height:1; }
+.photo-placeholder .cam { font-size:12px; color:rgba(255,255,255,0.22); }
+.card-bottom { background:rgba(10,22,40,0.75); padding:4px 7px 6px; display:flex; align-items:center; gap:5px; }
+.card-bottom .num { font-size:16px; font-weight:700; color:#fff; min-width:20px; }
+.card-bottom .name { font-size:12px; color:#ddeeff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.footer-bar { position:relative; z-index:10; background:rgba(8,18,36,0.97); border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; padding:8px 14px; gap:6px; flex-wrap:wrap; }
+.footer-label { font-size:10px; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,0.3); padding:3px 9px; border-radius:4px; letter-spacing:0.07em; white-space:nowrap; cursor:pointer; transition:background 0.15s; }
+.footer-label:hover { background:rgba(255,255,255,0.08); }
+.footer-subs { flex:1; display:flex; flex-wrap:wrap; padding:0 8px; align-items:center; }
+.sub-chip { display:flex; align-items:center; padding:0 8px; border-right:1px solid rgba(255,255,255,0.15); cursor:pointer; }
+.sub-chip:last-child { border-right:none; }
+.sub-text { font-size:11px; color:rgba(255,255,255,0.65); }
+.sub-chip:hover .sub-text { color:#fff; }
+.footer-coach-wrap { display:flex; align-items:center; gap:8px; cursor:pointer; }
+.footer-coach-wrap:hover .coach-name { color:#7ab8f5; }
+.coach-name { font-size:12px; color:#fff; }
+
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200; align-items:center; justify-content:center; padding:16px; }
+.modal-overlay.open { display:flex; }
+.modal { background:#0f1f3d; border:1px solid rgba(255,255,255,0.18); border-radius:14px; padding:20px 18px; width:300px; max-width:100%; max-height:90vh; overflow-y:auto; }
+.modal h3 { font-size:14px; font-weight:600; color:#fff; margin-bottom:14px; }
+.modal h3 small { font-size:11px; color:#5b9bd5; font-weight:400; margin-left:6px; }
+.preview-area { width:100%; height:120px; background:rgba(255,255,255,0.07); border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; position:relative; overflow:hidden; cursor:pointer; border:1px dashed rgba(255,255,255,0.2); }
+.preview-area:hover { border-color:rgba(255,255,255,0.4); }
+.preview-area img { width:100%; height:100%; object-fit:cover; object-position:top; }
+.upload-hint { display:flex; flex-direction:column; align-items:center; gap:5px; color:rgba(255,255,255,0.35); font-size:11px; }
+.upload-hint .icon { font-size:24px; }
+.field-row { display:flex; flex-direction:column; gap:4px; margin-bottom:10px; }
+.field-row label { font-size:10px; color:rgba(255,255,255,0.45); letter-spacing:0.05em; }
+.field-row input, .field-row select { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.18); border-radius:6px; color:#fff; font-size:13px; padding:7px 10px; width:100%; outline:none; }
+.field-row input:focus, .field-row select:focus { border-color:#3a6abf; }
+.field-row select option { background:#0f1f3d; color:#fff; }
+.modal-btns { display:flex; gap:8px; margin-top:14px; }
+.btn-save { flex:1; background:var(--blue); color:#fff; border:none; border-radius:7px; padding:9px; font-size:13px; font-weight:600; cursor:pointer; }
+.btn-save:hover { background:#2260c0; }
+.btn-cancel { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.65); border:1px solid rgba(255,255,255,0.15); border-radius:7px; padding:9px 14px; font-size:13px; cursor:pointer; }
+.subs-list { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+.sub-item { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.05); border-radius:7px; padding:8px 10px; border:1px solid rgba(255,255,255,0.1); }
+.sub-item .s-num { font-size:16px; font-weight:700; color:#fff; min-width:28px; }
+.sub-item .s-name { flex:1; font-size:13px; color:#ddeeff; }
+.sub-item .s-edit { font-size:12px; color:#5b9bd5; cursor:pointer; padding:2px 6px; }
+.sub-item .s-del { font-size:12px; color:#ff6060; cursor:pointer; padding:2px 6px; }
+.add-sub-btn { display:flex; align-items:center; justify-content:center; gap:6px; background:rgba(255,255,255,0.05); border:1px dashed rgba(255,255,255,0.2); border-radius:7px; padding:9px; font-size:12px; color:rgba(255,255,255,0.45); cursor:pointer; }
+.add-sub-btn:hover { background:rgba(255,255,255,0.09); color:rgba(255,255,255,0.7); }
+.inline-form { display:flex; gap:6px; align-items:center; margin-top:6px; }
+.inline-form input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; padding:6px 8px; outline:none; }
+.inline-form input.narrow { width:56px; flex:none; }
+.inline-form button { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="court-bg">
+    <svg viewBox="0 0 640 560" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="210,55 430,55 635,560 5,560" fill="#b8760e" opacity="0.78"/>
+      <polygon points="210,55 430,55 635,560 5,560" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="2.2"/>
+      <line x1="210" y1="55" x2="430" y2="55" stroke="#fff" stroke-width="3.5"/>
+      <line x1="278" y1="242" x2="508" y2="242" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+      <line x1="142" y1="428" x2="562" y2="428" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+      <line x1="5" y1="560" x2="635" y2="560" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+      <line x1="320" y1="55" x2="320" y2="560" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="7 5"/>
+      <line x1="320" y1="55" x2="5" y2="560" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <line x1="320" y1="55" x2="635" y2="560" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+      <text x="320" y="44" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.4)" letter-spacing="3">N E T</text>
+    </svg>
+  </div>
+  <div class="header">
+    <div class="title-block">
+      <h1>스타팅 멤버</h1>
+      <div class="sub">STARTING LINEUP</div>
+      <div class="badge-9">9인제 배구</div>
+    </div>
+    <div class="logo-wrap" onclick="openLogoModal()">
+      <div class="logo" id="logo-el">
+        <div class="logo-text">
+          <div style="font-size:9px;color:#7ab3e8;">★ ★ ★</div>
+          <div style="font-size:14px;font-weight:700;letter-spacing:0.05em;">SPIKE</div>
+          <div style="font-size:8px;color:#7ab3e8;letter-spacing:0.12em;">VOLLEYBALL</div>
+        </div>
+      </div>
+      <div class="logo-edit-hint">📷</div>
+    </div>
+  </div>
+  <div class="court-area" id="court-area"></div>
+  <div class="footer-bar">
+    <div class="footer-label" onclick="openSubsModal()">SUBSTITUTE</div>
+    <div class="footer-subs" id="subs-bar"></div>
+    <div class="footer-label" style="margin-right:8px;" onclick="openCoachModal()">HEAD COACH</div>
+    <div class="footer-coach-wrap" onclick="openCoachModal()">
+      <div class="coach-name" id="coach-bar">이도현</div>
+    </div>
+  </div>
+</div>
+
+<!-- 선수 편집 모달 -->
+<div class="modal-overlay" id="modal-player">
+  <div class="modal">
+    <h3>선수 정보 편집 <small id="mp-label"></small></h3>
+    <div class="preview-area" onclick="document.getElementById('mp-file').click()">
+      <img id="mp-img" style="display:none"/>
+      <div class="upload-hint" id="mp-hint"><div class="icon">📷</div><div>탭하여 사진 업로드</div></div>
+      <input type="file" id="mp-file" accept="image/*" style="display:none">
+    </div>
+    <div class="field-row"><label>이름</label><input type="text" id="mp-name"></div>
+    <div class="field-row"><label>등번호</label><input type="number" id="mp-num" min="0" max="99"></div>
+    <div class="field-row">
+      <label>포지션</label>
+      <select id="mp-pos">
+        <option value="OH">OH — 아웃사이드 히터</option>
+        <option value="MB">MB — 미들블로커</option>
+        <option value="S">S — 세터</option>
+        <option value="OP">OP — 아포짓</option>
+        <option value="L">L — 리베로</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeAll()">취소</button>
+      <button class="btn-save" onclick="savePlayer()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 후보 모달 -->
+<div class="modal-overlay" id="modal-subs">
+  <div class="modal">
+    <h3>후보 선수 관리</h3>
+    <div class="subs-list" id="subs-list"></div>
+    <div class="add-sub-btn" onclick="toggleAddForm()">＋ 후보 선수 추가</div>
+    <div id="add-form" style="display:none">
+      <div class="inline-form" style="margin-top:10px;">
+        <input class="narrow" type="number" id="new-sub-num" placeholder="번호">
+        <input type="text" id="new-sub-name" placeholder="이름">
+        <button onclick="addSub()">추가</button>
+      </div>
+    </div>
+    <div class="modal-btns"><button class="btn-save" onclick="closeAll()">완료</button></div>
+  </div>
+</div>
+
+<!-- 코치 모달 -->
+<div class="modal-overlay" id="modal-coach">
+  <div class="modal">
+    <h3>감독 / 코치 편집</h3>
+    <div class="field-row"><label>감독 이름</label><input type="text" id="coach-input"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeAll()">취소</button>
+      <button class="btn-save" onclick="saveCoach()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 로고 모달 -->
+<div class="modal-overlay" id="modal-logo">
+  <div class="modal">
+    <h3>팀 로고 변경</h3>
+    <div class="preview-area" onclick="document.getElementById('logo-file').click()" style="height:140px;border-radius:70px;width:140px;margin:0 auto 16px;">
+      <img id="logo-preview-img" style="display:none;border-radius:50%;"/>
+      <div class="upload-hint" id="logo-hint"><div class="icon">🏐</div><div>탭하여 로고 업로드</div></div>
+      <input type="file" id="logo-file" accept="image/*" style="display:none">
+    </div>
+    <div class="field-row"><label>팀 이름</label><input type="text" id="logo-teamname"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeAll()">취소</button>
+      <button class="btn-save" onclick="saveLogo()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const posNames = { OH:'아웃사이드\n히터', MB:'미들블로커', S:'세터', OP:'아포짓', L:'리베로' };
+let players = [
+  {num:12,name:"김나연",pos:"OH",photo:null},
+  {num:7, name:"박지윤",pos:"MB",photo:null},
+  {num:11,name:"이서연",pos:"OH",photo:null},
+  {num:5, name:"정다희",pos:"MB",photo:null},
+  {num:1, name:"한수빈",pos:"S", photo:null},
+  {num:9, name:"최유빈",pos:"OP",photo:null},
+  {num:3, name:"김지수",pos:"L", photo:null},
+  {num:8, name:"강민지",pos:"OH",photo:null},
+  {num:4, name:"이채원",pos:"MB",photo:null},
+];
+let subs = [{num:2,name:"윤서아"},{num:6,name:"배소민"},{num:10,name:"조하린"},{num:13,name:"유하은"},{num:14,name:"문예진"}];
+let coach = "이도현";
+let logoData = null;
+let teamName = "SPIKE";
+let editingIdx = null;
+let pendingPhoto = null;
+let pendingLogo = null;
+const rows = [[0,1],[2,3,4,5],[6,7,8]];
+
+function closeAll() {
+  document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));
+  editingIdx=null; pendingPhoto=null; pendingLogo=null;
+}
+function makeCard(i) {
+  const p=players[i], isLib=p.pos==='L';
+  const photoHTML=p.photo?`<img src="${p.photo}"/>`:`<div class="photo-placeholder"><div class="big-num">${p.num}</div><div class="cam">📷</div></div>`;
+  const div=document.createElement('div');
+  div.className='player-card';
+  div.onclick=()=>openPlayerModal(i);
+  div.innerHTML=`<div class="card-top"><span class="pos-badge ${isLib?'lib':''}">${p.pos}</span><span class="pos-name">${posNames[p.pos].replace(/\n/g,'<br>')}</span></div><div class="photo-area" style="${isLib?'background:rgba(255,255,255,0.13)':''}">${photoHTML}</div><div class="card-bottom"><span class="num">${p.num}</span><span class="name">${p.name}</span></div>`;
+  return div;
+}
+function renderAll() {
+  const area=document.getElementById('court-area'); area.innerHTML='';
+  rows.forEach(idxs=>{const row=document.createElement('div');row.className='row';idxs.forEach(i=>row.appendChild(makeCard(i)));area.appendChild(row);});
+  const bar=document.getElementById('subs-bar'); bar.innerHTML='';
+  subs.forEach(s=>{const chip=document.createElement('div');chip.className='sub-chip';chip.onclick=()=>openSubsModal();chip.innerHTML=`<span class="sub-text">${s.num} ${s.name}</span>`;bar.appendChild(chip);});
+  document.getElementById('coach-bar').textContent=coach;
+}
+function openPlayerModal(idx) {
+  editingIdx=idx; pendingPhoto=null;
+  const p=players[idx];
+  document.getElementById('mp-label').textContent='· '+p.name;
+  document.getElementById('mp-name').value=p.name;
+  document.getElementById('mp-num').value=p.num;
+  document.getElementById('mp-pos').value=p.pos;
+  const img=document.getElementById('mp-img');
+  if(p.photo){img.src=p.photo;img.style.display='block';document.getElementById('mp-hint').style.display='none';}
+  else{img.style.display='none';document.getElementById('mp-hint').style.display='flex';}
+  document.getElementById('modal-player').classList.add('open');
+}
+function savePlayer() {
+  if(editingIdx===null)return;
+  players[editingIdx].name=document.getElementById('mp-name').value||players[editingIdx].name;
+  players[editingIdx].num=parseInt(document.getElementById('mp-num').value)||players[editingIdx].num;
+  players[editingIdx].pos=document.getElementById('mp-pos').value;
+  if(pendingPhoto)players[editingIdx].photo=pendingPhoto;
+  closeAll();renderAll();
+}
+document.getElementById('mp-file').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=ev=>{pendingPhoto=ev.target.result;const img=document.getElementById('mp-img');img.src=pendingPhoto;img.style.display='block';document.getElementById('mp-hint').style.display='none';};r.readAsDataURL(f);
+});
+function openSubsModal(){renderSubsList();document.getElementById('add-form').style.display='none';document.getElementById('modal-subs').classList.add('open');}
+function renderSubsList(){
+  const el=document.getElementById('subs-list');el.innerHTML='';
+  subs.forEach((s,i)=>{const div=document.createElement('div');div.className='sub-item';div.innerHTML=`<span class="s-num">${s.num}</span><span class="s-name">${s.name}</span><span class="s-edit" onclick="editSubInline(${i})">✏️</span><span class="s-del" onclick="deleteSub(${i})">✕</span>`;el.appendChild(div);});
+}
+function editSubInline(i){const el=document.getElementById('subs-list').children[i];const s=subs[i];el.innerHTML=`<div class="inline-form" style="width:100%;margin:0;"><input class="narrow" type="number" value="${s.num}" id="ei-num-${i}"><input type="text" value="${s.name}" id="ei-name-${i}"><button onclick="confirmEditSub(${i})">저장</button></div>`;}
+function confirmEditSub(i){subs[i].num=parseInt(document.getElementById(`ei-num-${i}`).value)||subs[i].num;subs[i].name=document.getElementById(`ei-name-${i}`).value||subs[i].name;renderSubsList();renderAll();}
+function deleteSub(i){subs.splice(i,1);renderSubsList();renderAll();}
+function toggleAddForm(){const f=document.getElementById('add-form');f.style.display=f.style.display==='none'?'block':'none';}
+function addSub(){const num=parseInt(document.getElementById('new-sub-num').value);const name=document.getElementById('new-sub-name').value.trim();if(!name)return;subs.push({num:isNaN(num)?0:num,name});document.getElementById('add-form').style.display='none';renderSubsList();renderAll();}
+function openCoachModal(){document.getElementById('coach-input').value=coach;document.getElementById('modal-coach').classList.add('open');}
+function saveCoach(){const v=document.getElementById('coach-input').value.trim();if(v)coach=v;closeAll();renderAll();}
+function openLogoModal(){pendingLogo=null;document.getElementById('logo-teamname').value=teamName;const img=document.getElementById('logo-preview-img');if(logoData){img.src=logoData;img.style.display='block';document.getElementById('logo-hint').style.display='none';}else{img.style.display='none';document.getElementById('logo-hint').style.display='flex';}document.getElementById('modal-logo').classList.add('open');}
+function saveLogo(){const tn=document.getElementById('logo-teamname').value.trim();if(tn)teamName=tn;if(pendingLogo)logoData=pendingLogo;const logoEl=document.getElementById('logo-el');if(logoData){logoEl.innerHTML=`<img src="${logoData}"/>`;}else{logoEl.innerHTML=`<div class="logo-text"><div style="font-size:9px;color:#7ab3e8;">★ ★ ★</div><div style="font-size:14px;font-weight:700;letter-spacing:0.05em;">${teamName}</div><div style="font-size:8px;color:#7ab3e8;letter-spacing:0.12em;">VOLLEYBALL</div></div>`;}closeAll();}
+document.getElementById('logo-file').addEventListener('change',function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{pendingLogo=ev.target.result;const img=document.getElementById('logo-preview-img');img.src=pendingLogo;img.style.display='block';document.getElementById('logo-hint').style.display='none';};r.readAsDataURL(f);});
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)closeAll();});});
+renderAll();
+</script>
+</body>
+</html>
