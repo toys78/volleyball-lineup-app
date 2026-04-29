@@ -37,7 +37,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .photo-area img { width:100%; height:100%; object-fit:cover; object-position:top; position:absolute; inset:0; }
 .photo-placeholder { display:flex; flex-direction:column; align-items:center; gap:3px; }
 .photo-placeholder .big-num { font-size:36px; font-weight:700; color:rgba(255,255,255,0.12); line-height:1; }
-.photo-placeholder .cam { font-size:12px; color:rgba(255,255,255,0.22); }
+.photo-placeholder .cam { font-size:14px; color:rgba(255,255,255,0.3); }
 .card-bottom { background:rgba(10,22,40,0.75); padding:4px 7px 6px; display:flex; align-items:center; gap:5px; }
 .card-bottom .num { font-size:16px; font-weight:700; color:#fff; min-width:20px; }
 .card-bottom .name { font-size:12px; color:#ddeeff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -54,25 +54,49 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .footer-coach-wrap:hover .coach-name { color:#7ab8f5; }
 .coach-name { font-size:12px; color:#fff; }
 
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200; align-items:center; justify-content:center; padding:16px; }
+/* 모달 */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:200; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
-.modal { background:#0f1f3d; border:1px solid rgba(255,255,255,0.18); border-radius:14px; padding:20px 18px; width:300px; max-width:100%; max-height:90vh; overflow-y:auto; }
+.modal { background:#0f1f3d; border:1px solid rgba(255,255,255,0.18); border-radius:14px; padding:20px 18px; width:320px; max-width:100%; max-height:90vh; overflow-y:auto; }
 .modal h3 { font-size:14px; font-weight:600; color:#fff; margin-bottom:14px; }
 .modal h3 small { font-size:11px; color:#5b9bd5; font-weight:400; margin-left:6px; }
-.preview-area { width:100%; height:120px; background:rgba(255,255,255,0.07); border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; position:relative; overflow:hidden; cursor:pointer; border:1px dashed rgba(255,255,255,0.2); }
-.preview-area:hover { border-color:rgba(255,255,255,0.4); }
-.preview-area img { width:100%; height:100%; object-fit:cover; object-position:top; }
-.upload-hint { display:flex; flex-direction:column; align-items:center; gap:5px; color:rgba(255,255,255,0.35); font-size:11px; }
-.upload-hint .icon { font-size:24px; }
+
+/* 사진 입력 탭 */
+.photo-tabs { display:flex; gap:0; margin-bottom:12px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; overflow:hidden; }
+.photo-tab { flex:1; padding:8px; text-align:center; font-size:12px; color:rgba(255,255,255,0.5); cursor:pointer; background:transparent; border:none; transition:all 0.15s; }
+.photo-tab.active { background:var(--blue); color:#fff; font-weight:600; }
+
+/* 파일 업로드 영역 */
+.upload-box { width:100%; height:110px; background:rgba(255,255,255,0.06); border:1.5px dashed rgba(255,255,255,0.25); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; margin-bottom:12px; position:relative; overflow:hidden; transition:border-color 0.15s; }
+.upload-box:hover { border-color:rgba(255,255,255,0.5); }
+.upload-box img.preview { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; }
+.upload-box .hint { display:flex; flex-direction:column; align-items:center; gap:5px; color:rgba(255,255,255,0.35); font-size:11px; pointer-events:none; }
+.upload-box .hint .icon { font-size:26px; }
+.upload-box input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; font-size:0; }
+
+/* URL 입력 영역 */
+.url-box { display:none; margin-bottom:12px; }
+.url-preview { width:100%; height:110px; background:rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; margin-bottom:8px; display:flex; align-items:center; justify-content:center; }
+.url-preview img { width:100%; height:100%; object-fit:cover; object-position:top; }
+.url-preview .no-img { font-size:11px; color:rgba(255,255,255,0.25); }
+.url-input-wrap { display:flex; gap:6px; }
+.url-input-wrap input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; padding:8px 10px; outline:none; }
+.url-input-wrap input::placeholder { color:rgba(255,255,255,0.25); }
+.url-input-wrap input:focus { border-color:#3a6abf; }
+.url-input-wrap button { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:8px 12px; font-size:12px; cursor:pointer; white-space:nowrap; }
+
 .field-row { display:flex; flex-direction:column; gap:4px; margin-bottom:10px; }
 .field-row label { font-size:10px; color:rgba(255,255,255,0.45); letter-spacing:0.05em; }
-.field-row input, .field-row select { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.18); border-radius:6px; color:#fff; font-size:13px; padding:7px 10px; width:100%; outline:none; }
+.field-row input, .field-row select { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.18); border-radius:6px; color:#fff; font-size:13px; padding:8px 10px; width:100%; outline:none; }
 .field-row input:focus, .field-row select:focus { border-color:#3a6abf; }
 .field-row select option { background:#0f1f3d; color:#fff; }
+.helper-text { font-size:10px; color:rgba(255,255,255,0.3); margin-top:3px; line-height:1.4; }
+
 .modal-btns { display:flex; gap:8px; margin-top:14px; }
-.btn-save { flex:1; background:var(--blue); color:#fff; border:none; border-radius:7px; padding:9px; font-size:13px; font-weight:600; cursor:pointer; }
+.btn-save { flex:1; background:var(--blue); color:#fff; border:none; border-radius:7px; padding:10px; font-size:13px; font-weight:600; cursor:pointer; }
 .btn-save:hover { background:#2260c0; }
-.btn-cancel { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.65); border:1px solid rgba(255,255,255,0.15); border-radius:7px; padding:9px 14px; font-size:13px; cursor:pointer; }
+.btn-cancel { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.65); border:1px solid rgba(255,255,255,0.15); border-radius:7px; padding:10px 14px; font-size:13px; cursor:pointer; }
+
 .subs-list { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
 .sub-item { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.05); border-radius:7px; padding:8px 10px; border:1px solid rgba(255,255,255,0.1); }
 .sub-item .s-num { font-size:16px; font-weight:700; color:#fff; min-width:28px; }
@@ -81,10 +105,10 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .sub-item .s-del { font-size:12px; color:#ff6060; cursor:pointer; padding:2px 6px; }
 .add-sub-btn { display:flex; align-items:center; justify-content:center; gap:6px; background:rgba(255,255,255,0.05); border:1px dashed rgba(255,255,255,0.2); border-radius:7px; padding:9px; font-size:12px; color:rgba(255,255,255,0.45); cursor:pointer; }
 .add-sub-btn:hover { background:rgba(255,255,255,0.09); color:rgba(255,255,255,0.7); }
-.inline-form { display:flex; gap:6px; align-items:center; margin-top:6px; }
-.inline-form input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; padding:6px 8px; outline:none; }
+.inline-form { display:flex; gap:6px; align-items:center; margin-top:8px; }
+.inline-form input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; padding:7px 8px; outline:none; }
 .inline-form input.narrow { width:56px; flex:none; }
-.inline-form button { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:12px; cursor:pointer; }
+.inline-form button { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:7px 10px; font-size:12px; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -103,6 +127,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
       <text x="320" y="44" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.4)" letter-spacing="3">N E T</text>
     </svg>
   </div>
+
   <div class="header">
     <div class="title-block">
       <h1>스타팅 멤버</h1>
@@ -117,10 +142,12 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
           <div style="font-size:8px;color:#7ab3e8;letter-spacing:0.12em;">VOLLEYBALL</div>
         </div>
       </div>
-      <div class="logo-edit-hint">📷</div>
+      <div class="logo-edit-hint">✏️</div>
     </div>
   </div>
+
   <div class="court-area" id="court-area"></div>
+
   <div class="footer-bar">
     <div class="footer-label" onclick="openSubsModal()">SUBSTITUTE</div>
     <div class="footer-subs" id="subs-bar"></div>
@@ -135,11 +162,37 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 <div class="modal-overlay" id="modal-player">
   <div class="modal">
     <h3>선수 정보 편집 <small id="mp-label"></small></h3>
-    <div class="preview-area" onclick="document.getElementById('mp-file').click()">
-      <img id="mp-img" style="display:none"/>
-      <div class="upload-hint" id="mp-hint"><div class="icon">📷</div><div>탭하여 사진 업로드</div></div>
-      <input type="file" id="mp-file" accept="image/*" style="display:none">
+
+    <div class="photo-tabs">
+      <button class="photo-tab active" id="tab-file" onclick="switchTab('file')">📁 파일 업로드</button>
+      <button class="photo-tab" id="tab-url" onclick="switchTab('url')">🔗 이미지 URL</button>
     </div>
+
+    <!-- 파일 업로드 -->
+    <div id="section-file">
+      <div class="upload-box" id="upload-box">
+        <img id="mp-file-preview" style="display:none"/>
+        <div class="hint" id="mp-file-hint">
+          <div class="icon">📷</div>
+          <div>탭하여 사진 선택</div>
+        </div>
+        <input type="file" id="mp-file" accept="image/*">
+      </div>
+    </div>
+
+    <!-- URL 입력 -->
+    <div class="url-box" id="section-url">
+      <div class="url-preview">
+        <img id="mp-url-preview" style="display:none"/>
+        <div class="no-img" id="mp-url-no-img">URL을 입력하면 미리보기가 표시됩니다</div>
+      </div>
+      <div class="url-input-wrap">
+        <input type="text" id="mp-url-input" placeholder="https://...이미지주소">
+        <button onclick="applyUrl()">확인</button>
+      </div>
+      <div class="helper-text">구글 드라이브, 카카오 이미지, iCloud 공유 링크 등 사용 가능</div>
+    </div>
+
     <div class="field-row"><label>이름</label><input type="text" id="mp-name"></div>
     <div class="field-row"><label>등번호</label><input type="number" id="mp-num" min="0" max="99"></div>
     <div class="field-row">
@@ -166,7 +219,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
     <div class="subs-list" id="subs-list"></div>
     <div class="add-sub-btn" onclick="toggleAddForm()">＋ 후보 선수 추가</div>
     <div id="add-form" style="display:none">
-      <div class="inline-form" style="margin-top:10px;">
+      <div class="inline-form">
         <input class="narrow" type="number" id="new-sub-num" placeholder="번호">
         <input type="text" id="new-sub-name" placeholder="이름">
         <button onclick="addSub()">추가</button>
@@ -192,12 +245,32 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 <div class="modal-overlay" id="modal-logo">
   <div class="modal">
     <h3>팀 로고 변경</h3>
-    <div class="preview-area" onclick="document.getElementById('logo-file').click()" style="height:140px;border-radius:70px;width:140px;margin:0 auto 16px;">
-      <img id="logo-preview-img" style="display:none;border-radius:50%;"/>
-      <div class="upload-hint" id="logo-hint"><div class="icon">🏐</div><div>탭하여 로고 업로드</div></div>
-      <input type="file" id="logo-file" accept="image/*" style="display:none">
+
+    <div class="photo-tabs">
+      <button class="photo-tab active" id="logo-tab-file" onclick="switchLogoTab('file')">📁 파일 업로드</button>
+      <button class="photo-tab" id="logo-tab-url" onclick="switchLogoTab('url')">🔗 이미지 URL</button>
     </div>
-    <div class="field-row"><label>팀 이름</label><input type="text" id="logo-teamname"></div>
+
+    <div id="logo-section-file">
+      <div class="upload-box" id="logo-upload-box">
+        <img id="logo-file-preview" style="display:none;border-radius:50%;"/>
+        <div class="hint" id="logo-file-hint"><div class="icon">🏐</div><div>탭하여 로고 업로드</div></div>
+        <input type="file" id="logo-file-input" accept="image/*">
+      </div>
+    </div>
+
+    <div class="url-box" id="logo-section-url">
+      <div class="url-preview">
+        <img id="logo-url-preview" style="display:none;border-radius:8px;"/>
+        <div class="no-img" id="logo-url-no-img">URL을 입력하면 미리보기가 표시됩니다</div>
+      </div>
+      <div class="url-input-wrap">
+        <input type="text" id="logo-url-input" placeholder="https://...이미지주소">
+        <button onclick="applyLogoUrl()">확인</button>
+      </div>
+    </div>
+
+    <div class="field-row" style="margin-top:12px;"><label>팀 이름 (로고 없을 때 표시)</label><input type="text" id="logo-teamname"></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeAll()">취소</button>
       <button class="btn-save" onclick="saveLogo()">저장</button>
@@ -225,68 +298,249 @@ let teamName = "SPIKE";
 let editingIdx = null;
 let pendingPhoto = null;
 let pendingLogo = null;
-const rows = [[0,1],[2,3,4,5],[6,7,8]];
+const layoutRows = [[0,1],[2,3,4,5],[6,7,8]];
 
 function closeAll() {
   document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));
   editingIdx=null; pendingPhoto=null; pendingLogo=null;
 }
+
+/* ── 탭 전환 ── */
+function switchTab(t) {
+  document.getElementById('tab-file').classList.toggle('active', t==='file');
+  document.getElementById('tab-url').classList.toggle('active', t==='url');
+  document.getElementById('section-file').style.display = t==='file'?'block':'none';
+  document.getElementById('section-url').style.display  = t==='url' ?'block':'none';
+}
+function switchLogoTab(t) {
+  document.getElementById('logo-tab-file').classList.toggle('active', t==='file');
+  document.getElementById('logo-tab-url').classList.toggle('active', t==='url');
+  document.getElementById('logo-section-file').style.display = t==='file'?'block':'none';
+  document.getElementById('logo-section-url').style.display  = t==='url' ?'block':'none';
+}
+
+/* ── URL 적용 ── */
+function applyUrl() {
+  const url = document.getElementById('mp-url-input').value.trim();
+  if (!url) return;
+  const img = document.getElementById('mp-url-preview');
+  img.src = url;
+  img.style.display = 'block';
+  document.getElementById('mp-url-no-img').style.display = 'none';
+  pendingPhoto = url;
+}
+function applyLogoUrl() {
+  const url = document.getElementById('logo-url-input').value.trim();
+  if (!url) return;
+  const img = document.getElementById('logo-url-preview');
+  img.src = url;
+  img.style.display = 'block';
+  document.getElementById('logo-url-no-img').style.display = 'none';
+  pendingLogo = url;
+}
+
+/* ── 파일 읽기 ── */
+document.getElementById('mp-file').addEventListener('change', function(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    pendingPhoto = ev.target.result;
+    const img = document.getElementById('mp-file-preview');
+    img.src = pendingPhoto; img.style.display = 'block';
+    document.getElementById('mp-file-hint').style.display = 'none';
+  };
+  r.readAsDataURL(f);
+});
+document.getElementById('logo-file-input').addEventListener('change', function(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    pendingLogo = ev.target.result;
+    const img = document.getElementById('logo-file-preview');
+    img.src = pendingLogo; img.style.display = 'block';
+    document.getElementById('logo-file-hint').style.display = 'none';
+  };
+  r.readAsDataURL(f);
+});
+
+/* ── 카드 렌더 ── */
 function makeCard(i) {
-  const p=players[i], isLib=p.pos==='L';
-  const photoHTML=p.photo?`<img src="${p.photo}"/>`:`<div class="photo-placeholder"><div class="big-num">${p.num}</div><div class="cam">📷</div></div>`;
-  const div=document.createElement('div');
-  div.className='player-card';
-  div.onclick=()=>openPlayerModal(i);
-  div.innerHTML=`<div class="card-top"><span class="pos-badge ${isLib?'lib':''}">${p.pos}</span><span class="pos-name">${posNames[p.pos].replace(/\n/g,'<br>')}</span></div><div class="photo-area" style="${isLib?'background:rgba(255,255,255,0.13)':''}">${photoHTML}</div><div class="card-bottom"><span class="num">${p.num}</span><span class="name">${p.name}</span></div>`;
+  const p = players[i], isLib = p.pos==='L';
+  const photoHTML = p.photo
+    ? `<img src="${p.photo}"/>`
+    : `<div class="photo-placeholder"><div class="big-num">${p.num}</div><div class="cam">📷</div></div>`;
+  const div = document.createElement('div');
+  div.className = 'player-card';
+  div.onclick = () => openPlayerModal(i);
+  div.innerHTML = `
+    <div class="card-top">
+      <span class="pos-badge ${isLib?'lib':''}">${p.pos}</span>
+      <span class="pos-name">${posNames[p.pos].replace(/\n/g,'<br>')}</span>
+    </div>
+    <div class="photo-area" style="${isLib?'background:rgba(255,255,255,0.13)':''}">${photoHTML}</div>
+    <div class="card-bottom">
+      <span class="num">${p.num}</span>
+      <span class="name">${p.name}</span>
+    </div>`;
   return div;
 }
+
 function renderAll() {
-  const area=document.getElementById('court-area'); area.innerHTML='';
-  rows.forEach(idxs=>{const row=document.createElement('div');row.className='row';idxs.forEach(i=>row.appendChild(makeCard(i)));area.appendChild(row);});
-  const bar=document.getElementById('subs-bar'); bar.innerHTML='';
-  subs.forEach(s=>{const chip=document.createElement('div');chip.className='sub-chip';chip.onclick=()=>openSubsModal();chip.innerHTML=`<span class="sub-text">${s.num} ${s.name}</span>`;bar.appendChild(chip);});
-  document.getElementById('coach-bar').textContent=coach;
+  const area = document.getElementById('court-area');
+  area.innerHTML = '';
+  layoutRows.forEach(idxs => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    idxs.forEach(i => row.appendChild(makeCard(i)));
+    area.appendChild(row);
+  });
+  const bar = document.getElementById('subs-bar');
+  bar.innerHTML = '';
+  subs.forEach(s => {
+    const chip = document.createElement('div');
+    chip.className = 'sub-chip';
+    chip.onclick = () => openSubsModal();
+    chip.innerHTML = `<span class="sub-text">${s.num} ${s.name}</span>`;
+    bar.appendChild(chip);
+  });
+  document.getElementById('coach-bar').textContent = coach;
 }
+
+/* ── 선수 모달 ── */
 function openPlayerModal(idx) {
-  editingIdx=idx; pendingPhoto=null;
-  const p=players[idx];
-  document.getElementById('mp-label').textContent='· '+p.name;
-  document.getElementById('mp-name').value=p.name;
-  document.getElementById('mp-num').value=p.num;
-  document.getElementById('mp-pos').value=p.pos;
-  const img=document.getElementById('mp-img');
-  if(p.photo){img.src=p.photo;img.style.display='block';document.getElementById('mp-hint').style.display='none';}
-  else{img.style.display='none';document.getElementById('mp-hint').style.display='flex';}
+  editingIdx = idx; pendingPhoto = null;
+  const p = players[idx];
+  document.getElementById('mp-label').textContent = '· ' + p.name;
+  document.getElementById('mp-name').value = p.name;
+  document.getElementById('mp-num').value = p.num;
+  document.getElementById('mp-pos').value = p.pos;
+
+  // 초기화
+  switchTab('file');
+  const fImg = document.getElementById('mp-file-preview');
+  const fHint = document.getElementById('mp-file-hint');
+  document.getElementById('mp-url-input').value = '';
+  document.getElementById('mp-url-preview').style.display = 'none';
+  document.getElementById('mp-url-no-img').style.display = 'block';
+  document.getElementById('mp-file').value = '';
+
+  if (p.photo && p.photo.startsWith('http')) {
+    switchTab('url');
+    document.getElementById('mp-url-input').value = p.photo;
+    document.getElementById('mp-url-preview').src = p.photo;
+    document.getElementById('mp-url-preview').style.display = 'block';
+    document.getElementById('mp-url-no-img').style.display = 'none';
+    fImg.style.display = 'none'; fHint.style.display = 'flex';
+  } else if (p.photo) {
+    fImg.src = p.photo; fImg.style.display = 'block'; fHint.style.display = 'none';
+  } else {
+    fImg.style.display = 'none'; fHint.style.display = 'flex';
+  }
   document.getElementById('modal-player').classList.add('open');
 }
 function savePlayer() {
-  if(editingIdx===null)return;
-  players[editingIdx].name=document.getElementById('mp-name').value||players[editingIdx].name;
-  players[editingIdx].num=parseInt(document.getElementById('mp-num').value)||players[editingIdx].num;
-  players[editingIdx].pos=document.getElementById('mp-pos').value;
-  if(pendingPhoto)players[editingIdx].photo=pendingPhoto;
-  closeAll();renderAll();
+  if (editingIdx===null) return;
+  players[editingIdx].name = document.getElementById('mp-name').value || players[editingIdx].name;
+  players[editingIdx].num  = parseInt(document.getElementById('mp-num').value) || players[editingIdx].num;
+  players[editingIdx].pos  = document.getElementById('mp-pos').value;
+  if (pendingPhoto) players[editingIdx].photo = pendingPhoto;
+  closeAll(); renderAll();
 }
-document.getElementById('mp-file').addEventListener('change',function(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();r.onload=ev=>{pendingPhoto=ev.target.result;const img=document.getElementById('mp-img');img.src=pendingPhoto;img.style.display='block';document.getElementById('mp-hint').style.display='none';};r.readAsDataURL(f);
+
+/* ── 후보 모달 ── */
+function openSubsModal() {
+  renderSubsList();
+  document.getElementById('add-form').style.display = 'none';
+  document.getElementById('modal-subs').classList.add('open');
+}
+function renderSubsList() {
+  const el = document.getElementById('subs-list'); el.innerHTML = '';
+  subs.forEach((s,i) => {
+    const div = document.createElement('div');
+    div.className = 'sub-item';
+    div.innerHTML = `<span class="s-num">${s.num}</span><span class="s-name">${s.name}</span><span class="s-edit" onclick="editSubInline(${i})">✏️</span><span class="s-del" onclick="deleteSub(${i})">✕</span>`;
+    el.appendChild(div);
+  });
+}
+function editSubInline(i) {
+  const el = document.getElementById('subs-list').children[i];
+  const s = subs[i];
+  el.innerHTML = `<div class="inline-form" style="width:100%;margin:0;"><input class="narrow" type="number" value="${s.num}" id="ei-num-${i}"><input type="text" value="${s.name}" id="ei-name-${i}"><button onclick="confirmEditSub(${i})">저장</button></div>`;
+}
+function confirmEditSub(i) {
+  subs[i].num  = parseInt(document.getElementById(`ei-num-${i}`).value) || subs[i].num;
+  subs[i].name = document.getElementById(`ei-name-${i}`).value || subs[i].name;
+  renderSubsList(); renderAll();
+}
+function deleteSub(i) { subs.splice(i,1); renderSubsList(); renderAll(); }
+function toggleAddForm() {
+  const f = document.getElementById('add-form');
+  f.style.display = f.style.display==='none'?'block':'none';
+  if (f.style.display==='block') { document.getElementById('new-sub-num').value=''; document.getElementById('new-sub-name').value=''; }
+}
+function addSub() {
+  const num = parseInt(document.getElementById('new-sub-num').value);
+  const name = document.getElementById('new-sub-name').value.trim();
+  if (!name) return;
+  subs.push({num:isNaN(num)?0:num,name});
+  document.getElementById('add-form').style.display='none';
+  renderSubsList(); renderAll();
+}
+
+/* ── 코치 모달 ── */
+function openCoachModal() {
+  document.getElementById('coach-input').value = coach;
+  document.getElementById('modal-coach').classList.add('open');
+}
+function saveCoach() {
+  const v = document.getElementById('coach-input').value.trim();
+  if (v) coach = v;
+  closeAll(); renderAll();
+}
+
+/* ── 로고 모달 ── */
+function openLogoModal() {
+  pendingLogo = null;
+  document.getElementById('logo-teamname').value = teamName;
+  switchLogoTab('file');
+  document.getElementById('logo-file-preview').style.display = 'none';
+  document.getElementById('logo-file-hint').style.display = 'flex';
+  document.getElementById('logo-url-input').value = '';
+  document.getElementById('logo-url-preview').style.display = 'none';
+  document.getElementById('logo-url-no-img').style.display = 'block';
+  document.getElementById('logo-file-input').value = '';
+  if (logoData) {
+    if (logoData.startsWith('http')) {
+      switchLogoTab('url');
+      document.getElementById('logo-url-input').value = logoData;
+      document.getElementById('logo-url-preview').src = logoData;
+      document.getElementById('logo-url-preview').style.display = 'block';
+      document.getElementById('logo-url-no-img').style.display = 'none';
+    } else {
+      const img = document.getElementById('logo-file-preview');
+      img.src = logoData; img.style.display = 'block';
+      document.getElementById('logo-file-hint').style.display = 'none';
+    }
+  }
+  document.getElementById('modal-logo').classList.add('open');
+}
+function saveLogo() {
+  const tn = document.getElementById('logo-teamname').value.trim();
+  if (tn) teamName = tn;
+  if (pendingLogo) logoData = pendingLogo;
+  const logoEl = document.getElementById('logo-el');
+  if (logoData) {
+    logoEl.innerHTML = `<img src="${logoData}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+  } else {
+    logoEl.innerHTML = `<div class="logo-text"><div style="font-size:9px;color:#7ab3e8;">★ ★ ★</div><div style="font-size:14px;font-weight:700;letter-spacing:0.05em;">${teamName}</div><div style="font-size:8px;color:#7ab3e8;letter-spacing:0.12em;">VOLLEYBALL</div></div>`;
+  }
+  closeAll();
+}
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target===m) closeAll(); });
 });
-function openSubsModal(){renderSubsList();document.getElementById('add-form').style.display='none';document.getElementById('modal-subs').classList.add('open');}
-function renderSubsList(){
-  const el=document.getElementById('subs-list');el.innerHTML='';
-  subs.forEach((s,i)=>{const div=document.createElement('div');div.className='sub-item';div.innerHTML=`<span class="s-num">${s.num}</span><span class="s-name">${s.name}</span><span class="s-edit" onclick="editSubInline(${i})">✏️</span><span class="s-del" onclick="deleteSub(${i})">✕</span>`;el.appendChild(div);});
-}
-function editSubInline(i){const el=document.getElementById('subs-list').children[i];const s=subs[i];el.innerHTML=`<div class="inline-form" style="width:100%;margin:0;"><input class="narrow" type="number" value="${s.num}" id="ei-num-${i}"><input type="text" value="${s.name}" id="ei-name-${i}"><button onclick="confirmEditSub(${i})">저장</button></div>`;}
-function confirmEditSub(i){subs[i].num=parseInt(document.getElementById(`ei-num-${i}`).value)||subs[i].num;subs[i].name=document.getElementById(`ei-name-${i}`).value||subs[i].name;renderSubsList();renderAll();}
-function deleteSub(i){subs.splice(i,1);renderSubsList();renderAll();}
-function toggleAddForm(){const f=document.getElementById('add-form');f.style.display=f.style.display==='none'?'block':'none';}
-function addSub(){const num=parseInt(document.getElementById('new-sub-num').value);const name=document.getElementById('new-sub-name').value.trim();if(!name)return;subs.push({num:isNaN(num)?0:num,name});document.getElementById('add-form').style.display='none';renderSubsList();renderAll();}
-function openCoachModal(){document.getElementById('coach-input').value=coach;document.getElementById('modal-coach').classList.add('open');}
-function saveCoach(){const v=document.getElementById('coach-input').value.trim();if(v)coach=v;closeAll();renderAll();}
-function openLogoModal(){pendingLogo=null;document.getElementById('logo-teamname').value=teamName;const img=document.getElementById('logo-preview-img');if(logoData){img.src=logoData;img.style.display='block';document.getElementById('logo-hint').style.display='none';}else{img.style.display='none';document.getElementById('logo-hint').style.display='flex';}document.getElementById('modal-logo').classList.add('open');}
-function saveLogo(){const tn=document.getElementById('logo-teamname').value.trim();if(tn)teamName=tn;if(pendingLogo)logoData=pendingLogo;const logoEl=document.getElementById('logo-el');if(logoData){logoEl.innerHTML=`<img src="${logoData}"/>`;}else{logoEl.innerHTML=`<div class="logo-text"><div style="font-size:9px;color:#7ab3e8;">★ ★ ★</div><div style="font-size:14px;font-weight:700;letter-spacing:0.05em;">${teamName}</div><div style="font-size:8px;color:#7ab3e8;letter-spacing:0.12em;">VOLLEYBALL</div></div>`;}closeAll();}
-document.getElementById('logo-file').addEventListener('change',function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{pendingLogo=ev.target.result;const img=document.getElementById('logo-preview-img');img.src=pendingLogo;img.style.display='block';document.getElementById('logo-hint').style.display='none';};r.readAsDataURL(f);});
-document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)closeAll();});});
+
 renderAll();
 </script>
 </body>
