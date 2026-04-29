@@ -278,11 +278,15 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
     <div class="field-row">
       <label>포지션</label>
       <select id="mp-pos">
-        <option value="OH">OH — 아웃사이드 히터</option>
-        <option value="MB">MB — 미들블로커</option>
+        <option value="L">L — 레프트</option>
+        <option value="R">R — 라이트</option>
         <option value="S">S — 세터</option>
-        <option value="OP">OP — 아포짓</option>
-        <option value="L">L — 리베로</option>
+        <option value="C">C — 센터</option>
+        <option value="F">F — 앞차</option>
+        <option value="B">B — 백차</option>
+        <option value="BS">BS — 백센터</option>
+        <option value="RB">RB — 라이트백</option>
+        <option value="LB">LB — 레프트백</option>
       </select>
     </div>
     <div class="modal-btns">
@@ -372,20 +376,20 @@ const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 const lineupRef = ref(db, 'lineup');
 
-const posNames = { OH:'아웃사이드\n히터', MB:'미들블로커', S:'세터', OP:'아포짓', L:'리베로' };
+const posNames = { L:'레프트', R:'라이트', S:'세터', C:'센터', F:'앞차', B:'백차', BS:'백센터', RB:'라이트백', LB:'레프트백' };
 const layoutRows = [[0,1],[2,3,4,5],[6,7,8]];
 
 let state = {
   players: [
-    {num:12,name:"김나연",pos:"OH",photo:""},
-    {num:7, name:"박지윤",pos:"MB",photo:""},
-    {num:11,name:"이서연",pos:"OH",photo:""},
-    {num:5, name:"정다희",pos:"MB",photo:""},
+    {num:12,name:"김나연",pos:"L", photo:""},
+    {num:7, name:"박지윤",pos:"C", photo:""},
+    {num:11,name:"이서연",pos:"R", photo:""},
+    {num:5, name:"정다희",pos:"F", photo:""},
     {num:1, name:"한수빈",pos:"S", photo:""},
-    {num:9, name:"최유빈",pos:"OP",photo:""},
-    {num:3, name:"김지수",pos:"L", photo:""},
-    {num:8, name:"강민지",pos:"OH",photo:""},
-    {num:4, name:"이채원",pos:"MB",photo:""},
+    {num:9, name:"최유빈",pos:"B", photo:""},
+    {num:3, name:"김지수",pos:"LB",photo:""},
+    {num:8, name:"강민지",pos:"BS",photo:""},
+    {num:4, name:"이채원",pos:"RB",photo:""},
   ],
   subs: [
     {num:2,name:"윤서아"},{num:6,name:"배소민"},
@@ -478,7 +482,7 @@ function renderCourt() {
 }
 
 function makeCard(i) {
-  const p = state.players[i], isLib = p.pos==='L';
+  const p = state.players[i], isLib = false;
   const photoHTML = p.photo
     ? `<img src="${p.photo}"/>`
     : `<div class="photo-placeholder"><div class="big-num">${p.num}</div><div class="cam">📷</div></div>`;
@@ -487,10 +491,10 @@ function makeCard(i) {
   div.onclick = () => onCardTap(i);
   div.innerHTML = `
     <div class="card-top">
-      <span class="pos-badge ${isLib?'lib':''}">${p.pos}</span>
-      <span class="pos-name">${posNames[p.pos].replace(/\n/g,'<br>')}</span>
+      <span class="pos-badge">${p.pos}</span>
+      <span class="pos-name">${posNames[p.pos]||p.pos}</span>
     </div>
-    <div class="photo-area" style="${isLib?'background:rgba(255,255,255,0.13)':''}">${photoHTML}</div>
+    <div class="photo-area">${photoHTML}</div>
     <div class="card-bottom"><span class="num">${p.num}</span><span class="name">${p.name}</span></div>`;
   return div;
 }
@@ -589,7 +593,7 @@ function renderServeOrder() {
       <div class="serve-player-photo">${photoHTML}</div>
       <div class="serve-player-info">
         <div class="serve-player-name">${p.name}</div>
-        <div class="serve-player-pos">${p.pos} · #${p.num}</div>
+        <div class="serve-player-pos">${posNames[p.pos]||p.pos} · #${p.num}</div>
       </div>
       <div class="serve-num-badge">#${p.num}</div>
       <div class="serve-drag-handle">⠿</div>`;
