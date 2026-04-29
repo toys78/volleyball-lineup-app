@@ -13,7 +13,15 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .court-bg { position:absolute; top:0; left:0; right:0; bottom:52px; pointer-events:none; }
 .court-bg svg { width:100%; height:100%; }
 
-.header { position:relative; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; padding:20px 20px 10px; }
+/* 동기화 상태 표시 */
+.sync-bar { position:relative; z-index:20; display:flex; align-items:center; justify-content:flex-end; padding:6px 14px 0; gap:6px; }
+.sync-dot { width:7px; height:7px; border-radius:50%; background:#4caf50; }
+.sync-dot.offline { background:#f44336; }
+.sync-dot.syncing { background:#ff9800; animation:pulse 0.8s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.sync-label { font-size:10px; color:rgba(255,255,255,0.4); }
+
+.header { position:relative; z-index:10; display:flex; align-items:flex-start; justify-content:space-between; padding:8px 20px 10px; }
 .title-block h1 { font-size:28px; font-weight:700; color:#fff; letter-spacing:-0.5px; line-height:1.1; }
 .title-block .sub { font-size:11px; color:#5b9bd5; letter-spacing:0.14em; margin-top:3px; }
 .badge-9 { display:inline-block; background:var(--blue); color:#fff; font-size:10px; padding:3px 9px; border-radius:4px; margin-top:5px; }
@@ -54,6 +62,12 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .footer-coach-wrap:hover .coach-name { color:#7ab8f5; }
 .coach-name { font-size:12px; color:#fff; }
 
+/* 로딩 오버레이 */
+.loading-overlay { position:absolute; inset:0; background:rgba(10,22,40,0.85); z-index:100; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; border-radius:12px; }
+.loading-spinner { width:36px; height:36px; border:3px solid rgba(255,255,255,0.15); border-top-color:#5b9bd5; border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-text { font-size:13px; color:rgba(255,255,255,0.5); }
+
 /* 모달 */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:200; align-items:center; justify-content:center; padding:16px; }
 .modal-overlay.open { display:flex; }
@@ -61,20 +75,17 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .modal h3 { font-size:14px; font-weight:600; color:#fff; margin-bottom:14px; }
 .modal h3 small { font-size:11px; color:#5b9bd5; font-weight:400; margin-left:6px; }
 
-/* 사진 입력 탭 */
-.photo-tabs { display:flex; gap:0; margin-bottom:12px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; overflow:hidden; }
+.photo-tabs { display:flex; margin-bottom:12px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; overflow:hidden; }
 .photo-tab { flex:1; padding:8px; text-align:center; font-size:12px; color:rgba(255,255,255,0.5); cursor:pointer; background:transparent; border:none; transition:all 0.15s; }
 .photo-tab.active { background:var(--blue); color:#fff; font-weight:600; }
 
-/* 파일 업로드 영역 */
-.upload-box { width:100%; height:110px; background:rgba(255,255,255,0.06); border:1.5px dashed rgba(255,255,255,0.25); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; margin-bottom:12px; position:relative; overflow:hidden; transition:border-color 0.15s; }
+.upload-box { width:100%; height:110px; background:rgba(255,255,255,0.06); border:1.5px dashed rgba(255,255,255,0.25); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; cursor:pointer; margin-bottom:12px; position:relative; overflow:hidden; }
 .upload-box:hover { border-color:rgba(255,255,255,0.5); }
 .upload-box img.preview { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top; }
 .upload-box .hint { display:flex; flex-direction:column; align-items:center; gap:5px; color:rgba(255,255,255,0.35); font-size:11px; pointer-events:none; }
 .upload-box .hint .icon { font-size:26px; }
 .upload-box input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; font-size:0; }
 
-/* URL 입력 영역 */
 .url-box { display:none; margin-bottom:12px; }
 .url-preview { width:100%; height:110px; background:rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; margin-bottom:8px; display:flex; align-items:center; justify-content:center; }
 .url-preview img { width:100%; height:100%; object-fit:cover; object-position:top; }
@@ -83,14 +94,13 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .url-input-wrap input { flex:1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; padding:8px 10px; outline:none; }
 .url-input-wrap input::placeholder { color:rgba(255,255,255,0.25); }
 .url-input-wrap input:focus { border-color:#3a6abf; }
-.url-input-wrap button { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:8px 12px; font-size:12px; cursor:pointer; white-space:nowrap; }
+.url-input-wrap button { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:8px 12px; font-size:12px; cursor:pointer; }
 
 .field-row { display:flex; flex-direction:column; gap:4px; margin-bottom:10px; }
 .field-row label { font-size:10px; color:rgba(255,255,255,0.45); letter-spacing:0.05em; }
 .field-row input, .field-row select { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.18); border-radius:6px; color:#fff; font-size:13px; padding:8px 10px; width:100%; outline:none; }
 .field-row input:focus, .field-row select:focus { border-color:#3a6abf; }
 .field-row select option { background:#0f1f3d; color:#fff; }
-.helper-text { font-size:10px; color:rgba(255,255,255,0.3); margin-top:3px; line-height:1.4; }
 
 .modal-btns { display:flex; gap:8px; margin-top:14px; }
 .btn-save { flex:1; background:var(--blue); color:#fff; border:none; border-radius:7px; padding:10px; font-size:13px; font-weight:600; cursor:pointer; }
@@ -113,6 +123,12 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 </head>
 <body>
 <div class="wrap">
+  <!-- 로딩 오버레이 -->
+  <div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">데이터 불러오는 중...</div>
+  </div>
+
   <div class="court-bg">
     <svg viewBox="0 0 640 560" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <polygon points="210,55 430,55 635,560 5,560" fill="#b8760e" opacity="0.78"/>
@@ -128,6 +144,12 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
     </svg>
   </div>
 
+  <!-- 동기화 상태 -->
+  <div class="sync-bar">
+    <div class="sync-dot" id="sync-dot"></div>
+    <div class="sync-label" id="sync-label">연결 중...</div>
+  </div>
+
   <div class="header">
     <div class="title-block">
       <h1>스타팅 멤버</h1>
@@ -138,7 +160,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
       <div class="logo" id="logo-el">
         <div class="logo-text">
           <div style="font-size:9px;color:#7ab3e8;">★ ★ ★</div>
-          <div style="font-size:14px;font-weight:700;letter-spacing:0.05em;">SPIKE</div>
+          <div style="font-size:14px;font-weight:700;letter-spacing:0.05em;" id="logo-team-text">SPIKE</div>
           <div style="font-size:8px;color:#7ab3e8;letter-spacing:0.12em;">VOLLEYBALL</div>
         </div>
       </div>
@@ -153,7 +175,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
     <div class="footer-subs" id="subs-bar"></div>
     <div class="footer-label" style="margin-right:8px;" onclick="openCoachModal()">HEAD COACH</div>
     <div class="footer-coach-wrap" onclick="openCoachModal()">
-      <div class="coach-name" id="coach-bar">이도현</div>
+      <div class="coach-name" id="coach-bar">-</div>
     </div>
   </div>
 </div>
@@ -162,25 +184,17 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 <div class="modal-overlay" id="modal-player">
   <div class="modal">
     <h3>선수 정보 편집 <small id="mp-label"></small></h3>
-
     <div class="photo-tabs">
       <button class="photo-tab active" id="tab-file" onclick="switchTab('file')">📁 파일 업로드</button>
       <button class="photo-tab" id="tab-url" onclick="switchTab('url')">🔗 이미지 URL</button>
     </div>
-
-    <!-- 파일 업로드 -->
     <div id="section-file">
       <div class="upload-box" id="upload-box">
-        <img id="mp-file-preview" style="display:none"/>
-        <div class="hint" id="mp-file-hint">
-          <div class="icon">📷</div>
-          <div>탭하여 사진 선택</div>
-        </div>
+        <img class="preview" id="mp-file-preview" style="display:none"/>
+        <div class="hint" id="mp-file-hint"><div class="icon">📷</div><div>탭하여 사진 선택</div></div>
         <input type="file" id="mp-file" accept="image/*">
       </div>
     </div>
-
-    <!-- URL 입력 -->
     <div class="url-box" id="section-url">
       <div class="url-preview">
         <img id="mp-url-preview" style="display:none"/>
@@ -190,9 +204,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
         <input type="text" id="mp-url-input" placeholder="https://...이미지주소">
         <button onclick="applyUrl()">확인</button>
       </div>
-      <div class="helper-text">구글 드라이브, 카카오 이미지, iCloud 공유 링크 등 사용 가능</div>
     </div>
-
     <div class="field-row"><label>이름</label><input type="text" id="mp-name"></div>
     <div class="field-row"><label>등번호</label><input type="number" id="mp-num" min="0" max="99"></div>
     <div class="field-row">
@@ -207,7 +219,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeAll()">취소</button>
-      <button class="btn-save" onclick="savePlayer()">저장</button>
+      <button class="btn-save" onclick="savePlayer()">저장 & 동기화</button>
     </div>
   </div>
 </div>
@@ -225,7 +237,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
         <button onclick="addSub()">추가</button>
       </div>
     </div>
-    <div class="modal-btns"><button class="btn-save" onclick="closeAll()">완료</button></div>
+    <div class="modal-btns"><button class="btn-save" onclick="saveAndCloseSubs()">저장 & 동기화</button></div>
   </div>
 </div>
 
@@ -236,7 +248,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
     <div class="field-row"><label>감독 이름</label><input type="text" id="coach-input"></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeAll()">취소</button>
-      <button class="btn-save" onclick="saveCoach()">저장</button>
+      <button class="btn-save" onclick="saveCoach()">저장 & 동기화</button>
     </div>
   </div>
 </div>
@@ -245,23 +257,20 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 <div class="modal-overlay" id="modal-logo">
   <div class="modal">
     <h3>팀 로고 변경</h3>
-
     <div class="photo-tabs">
       <button class="photo-tab active" id="logo-tab-file" onclick="switchLogoTab('file')">📁 파일 업로드</button>
       <button class="photo-tab" id="logo-tab-url" onclick="switchLogoTab('url')">🔗 이미지 URL</button>
     </div>
-
     <div id="logo-section-file">
-      <div class="upload-box" id="logo-upload-box">
-        <img id="logo-file-preview" style="display:none;border-radius:50%;"/>
+      <div class="upload-box">
+        <img class="preview" id="logo-file-preview" style="display:none;border-radius:50%;"/>
         <div class="hint" id="logo-file-hint"><div class="icon">🏐</div><div>탭하여 로고 업로드</div></div>
         <input type="file" id="logo-file-input" accept="image/*">
       </div>
     </div>
-
     <div class="url-box" id="logo-section-url">
       <div class="url-preview">
-        <img id="logo-url-preview" style="display:none;border-radius:8px;"/>
+        <img id="logo-url-preview" style="display:none;"/>
         <div class="no-img" id="logo-url-no-img">URL을 입력하면 미리보기가 표시됩니다</div>
       </div>
       <div class="url-input-wrap">
@@ -269,103 +278,146 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
         <button onclick="applyLogoUrl()">확인</button>
       </div>
     </div>
-
-    <div class="field-row" style="margin-top:12px;"><label>팀 이름 (로고 없을 때 표시)</label><input type="text" id="logo-teamname"></div>
+    <div class="field-row" style="margin-top:12px;"><label>팀 이름</label><input type="text" id="logo-teamname"></div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeAll()">취소</button>
-      <button class="btn-save" onclick="saveLogo()">저장</button>
+      <button class="btn-save" onclick="saveLogo()">저장 & 동기화</button>
     </div>
   </div>
 </div>
 
-<script>
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCb1X0KDFgQUOwygQHEyz3ODyVNOVQT7vQ",
+  authDomain: "volleyball-starting.firebaseapp.com",
+  databaseURL: "https://volleyball-starting-default-rtdb.firebaseio.com",
+  projectId: "volleyball-starting",
+  storageBucket: "volleyball-starting.firebasestorage.app",
+  messagingSenderId: "729895201647",
+  appId: "1:729895201647:web:eb7f0287834bdf4601969a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 const posNames = { OH:'아웃사이드\n히터', MB:'미들블로커', S:'세터', OP:'아포짓', L:'리베로' };
-let players = [
-  {num:12,name:"김나연",pos:"OH",photo:null},
-  {num:7, name:"박지윤",pos:"MB",photo:null},
-  {num:11,name:"이서연",pos:"OH",photo:null},
-  {num:5, name:"정다희",pos:"MB",photo:null},
-  {num:1, name:"한수빈",pos:"S", photo:null},
-  {num:9, name:"최유빈",pos:"OP",photo:null},
-  {num:3, name:"김지수",pos:"L", photo:null},
-  {num:8, name:"강민지",pos:"OH",photo:null},
-  {num:4, name:"이채원",pos:"MB",photo:null},
-];
-let subs = [{num:2,name:"윤서아"},{num:6,name:"배소민"},{num:10,name:"조하린"},{num:13,name:"유하은"},{num:14,name:"문예진"}];
-let coach = "이도현";
-let logoData = null;
-let teamName = "SPIKE";
+const layoutRows = [[0,1],[2,3,4,5],[6,7,8]];
+
+const defaultData = {
+  players: [
+    {num:12,name:"김나연",pos:"OH",photo:""},
+    {num:7, name:"박지윤",pos:"MB",photo:""},
+    {num:11,name:"이서연",pos:"OH",photo:""},
+    {num:5, name:"정다희",pos:"MB",photo:""},
+    {num:1, name:"한수빈",pos:"S", photo:""},
+    {num:9, name:"최유빈",pos:"OP",photo:""},
+    {num:3, name:"김지수",pos:"L", photo:""},
+    {num:8, name:"강민지",pos:"OH",photo:""},
+    {num:4, name:"이채원",pos:"MB",photo:""},
+  ],
+  subs: [
+    {num:2,name:"윤서아"},
+    {num:6,name:"배소민"},
+    {num:10,name:"조하린"},
+    {num:13,name:"유하은"},
+    {num:14,name:"문예진"}
+  ],
+  coach: "이도현",
+  teamName: "SPIKE",
+  logoPhoto: ""
+};
+
+let state = JSON.parse(JSON.stringify(defaultData));
 let editingIdx = null;
 let pendingPhoto = null;
 let pendingLogo = null;
-const layoutRows = [[0,1],[2,3,4,5],[6,7,8]];
 
-function closeAll() {
-  document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));
-  editingIdx=null; pendingPhoto=null; pendingLogo=null;
-}
-
-/* ── 탭 전환 ── */
-function switchTab(t) {
-  document.getElementById('tab-file').classList.toggle('active', t==='file');
-  document.getElementById('tab-url').classList.toggle('active', t==='url');
-  document.getElementById('section-file').style.display = t==='file'?'block':'none';
-  document.getElementById('section-url').style.display  = t==='url' ?'block':'none';
-}
-function switchLogoTab(t) {
-  document.getElementById('logo-tab-file').classList.toggle('active', t==='file');
-  document.getElementById('logo-tab-url').classList.toggle('active', t==='url');
-  document.getElementById('logo-section-file').style.display = t==='file'?'block':'none';
-  document.getElementById('logo-section-url').style.display  = t==='url' ?'block':'none';
+// ── 동기화 상태 표시
+function setSyncStatus(status) {
+  const dot = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  dot.className = 'sync-dot ' + (status === 'online' ? '' : status === 'syncing' ? 'syncing' : 'offline');
+  label.textContent = status === 'online' ? '실시간 동기화 중' : status === 'syncing' ? '저장 중...' : '연결 끊김';
 }
 
-/* ── URL 적용 ── */
-function applyUrl() {
-  const url = document.getElementById('mp-url-input').value.trim();
-  if (!url) return;
-  const img = document.getElementById('mp-url-preview');
-  img.src = url;
-  img.style.display = 'block';
-  document.getElementById('mp-url-no-img').style.display = 'none';
-  pendingPhoto = url;
-}
-function applyLogoUrl() {
-  const url = document.getElementById('logo-url-input').value.trim();
-  if (!url) return;
-  const img = document.getElementById('logo-url-preview');
-  img.src = url;
-  img.style.display = 'block';
-  document.getElementById('logo-url-no-img').style.display = 'none';
-  pendingLogo = url;
-}
-
-/* ── 파일 읽기 ── */
-document.getElementById('mp-file').addEventListener('change', function(e) {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    pendingPhoto = ev.target.result;
-    const img = document.getElementById('mp-file-preview');
-    img.src = pendingPhoto; img.style.display = 'block';
-    document.getElementById('mp-file-hint').style.display = 'none';
-  };
-  r.readAsDataURL(f);
-});
-document.getElementById('logo-file-input').addEventListener('change', function(e) {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    pendingLogo = ev.target.result;
-    const img = document.getElementById('logo-file-preview');
-    img.src = pendingLogo; img.style.display = 'block';
-    document.getElementById('logo-file-hint').style.display = 'none';
-  };
-  r.readAsDataURL(f);
+// ── Firebase 실시간 수신
+const lineupRef = ref(db, 'lineup');
+onValue(lineupRef, (snapshot) => {
+  document.getElementById('loading').style.display = 'none';
+  setSyncStatus('online');
+  const data = snapshot.val();
+  if (data) {
+    state.players  = data.players  || state.players;
+    state.subs     = data.subs     || state.subs;
+    state.coach    = data.coach    || state.coach;
+    state.teamName = data.teamName || state.teamName;
+    state.logoPhoto= data.logoPhoto|| state.logoPhoto;
+  } else {
+    // 첫 접속 시 기본 데이터 저장
+    pushToFirebase();
+  }
+  renderAll();
+}, (error) => {
+  setSyncStatus('offline');
+  document.getElementById('loading').style.display = 'none';
+  renderAll();
 });
 
-/* ── 카드 렌더 ── */
+// ── Firebase 저장
+function pushToFirebase() {
+  setSyncStatus('syncing');
+  set(lineupRef, {
+    players:   state.players,
+    subs:      state.subs,
+    coach:     state.coach,
+    teamName:  state.teamName,
+    logoPhoto: state.logoPhoto
+  }).then(() => setSyncStatus('online'))
+    .catch(() => setSyncStatus('offline'));
+}
+
+// ── 렌더링
+function renderAll() {
+  const area = document.getElementById('court-area');
+  area.innerHTML = '';
+  layoutRows.forEach(idxs => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    idxs.forEach(i => row.appendChild(makeCard(i)));
+    area.appendChild(row);
+  });
+
+  const bar = document.getElementById('subs-bar');
+  bar.innerHTML = '';
+  (state.subs || []).forEach(s => {
+    const chip = document.createElement('div');
+    chip.className = 'sub-chip';
+    chip.onclick = () => openSubsModal();
+    chip.innerHTML = `<span class="sub-text">${s.num} ${s.name}</span>`;
+    bar.appendChild(chip);
+  });
+
+  document.getElementById('coach-bar').textContent = state.coach || '-';
+
+  // 로고
+  const logoEl = document.getElementById('logo-el');
+  if (state.logoPhoto) {
+    logoEl.innerHTML = `<img src="${state.logoPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+  } else {
+    logoEl.innerHTML = `<div class="logo-text">
+      <div style="font-size:9px;color:#7ab3e8;">★ ★ ★</div>
+      <div style="font-size:14px;font-weight:700;letter-spacing:0.05em;">${state.teamName||'SPIKE'}</div>
+      <div style="font-size:8px;color:#7ab3e8;letter-spacing:0.12em;">VOLLEYBALL</div>
+    </div>`;
+  }
+}
+
 function makeCard(i) {
-  const p = players[i], isLib = p.pos==='L';
+  const p = state.players[i], isLib = p.pos === 'L';
   const photoHTML = p.photo
     ? `<img src="${p.photo}"/>`
     : `<div class="photo-placeholder"><div class="big-num">${p.num}</div><div class="cam">📷</div></div>`;
@@ -385,163 +437,194 @@ function makeCard(i) {
   return div;
 }
 
-function renderAll() {
-  const area = document.getElementById('court-area');
-  area.innerHTML = '';
-  layoutRows.forEach(idxs => {
-    const row = document.createElement('div');
-    row.className = 'row';
-    idxs.forEach(i => row.appendChild(makeCard(i)));
-    area.appendChild(row);
-  });
-  const bar = document.getElementById('subs-bar');
-  bar.innerHTML = '';
-  subs.forEach(s => {
-    const chip = document.createElement('div');
-    chip.className = 'sub-chip';
-    chip.onclick = () => openSubsModal();
-    chip.innerHTML = `<span class="sub-text">${s.num} ${s.name}</span>`;
-    bar.appendChild(chip);
-  });
-  document.getElementById('coach-bar').textContent = coach;
-}
+// ── 탭
+window.switchTab = (t) => {
+  document.getElementById('tab-file').classList.toggle('active', t==='file');
+  document.getElementById('tab-url').classList.toggle('active', t==='url');
+  document.getElementById('section-file').style.display = t==='file'?'block':'none';
+  document.getElementById('section-url').style.display  = t==='url' ?'block':'none';
+};
+window.switchLogoTab = (t) => {
+  document.getElementById('logo-tab-file').classList.toggle('active', t==='file');
+  document.getElementById('logo-tab-url').classList.toggle('active', t==='url');
+  document.getElementById('logo-section-file').style.display = t==='file'?'block':'none';
+  document.getElementById('logo-section-url').style.display  = t==='url' ?'block':'none';
+};
 
-/* ── 선수 모달 ── */
-function openPlayerModal(idx) {
+window.applyUrl = () => {
+  const url = document.getElementById('mp-url-input').value.trim();
+  if (!url) return;
+  document.getElementById('mp-url-preview').src = url;
+  document.getElementById('mp-url-preview').style.display = 'block';
+  document.getElementById('mp-url-no-img').style.display = 'none';
+  pendingPhoto = url;
+};
+window.applyLogoUrl = () => {
+  const url = document.getElementById('logo-url-input').value.trim();
+  if (!url) return;
+  document.getElementById('logo-url-preview').src = url;
+  document.getElementById('logo-url-preview').style.display = 'block';
+  document.getElementById('logo-url-no-img').style.display = 'none';
+  pendingLogo = url;
+};
+
+document.getElementById('mp-file').addEventListener('change', function(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    pendingPhoto = ev.target.result;
+    document.getElementById('mp-file-preview').src = pendingPhoto;
+    document.getElementById('mp-file-preview').style.display = 'block';
+    document.getElementById('mp-file-hint').style.display = 'none';
+  };
+  r.readAsDataURL(f);
+});
+document.getElementById('logo-file-input').addEventListener('change', function(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    pendingLogo = ev.target.result;
+    document.getElementById('logo-file-preview').src = pendingLogo;
+    document.getElementById('logo-file-preview').style.display = 'block';
+    document.getElementById('logo-file-hint').style.display = 'none';
+  };
+  r.readAsDataURL(f);
+});
+
+// ── 선수 모달
+window.openPlayerModal = (idx) => {
   editingIdx = idx; pendingPhoto = null;
-  const p = players[idx];
+  const p = state.players[idx];
   document.getElementById('mp-label').textContent = '· ' + p.name;
   document.getElementById('mp-name').value = p.name;
   document.getElementById('mp-num').value = p.num;
   document.getElementById('mp-pos').value = p.pos;
-
-  // 초기화
-  switchTab('file');
-  const fImg = document.getElementById('mp-file-preview');
-  const fHint = document.getElementById('mp-file-hint');
+  window.switchTab('file');
+  document.getElementById('mp-file-preview').style.display = 'none';
+  document.getElementById('mp-file-hint').style.display = 'flex';
   document.getElementById('mp-url-input').value = '';
   document.getElementById('mp-url-preview').style.display = 'none';
   document.getElementById('mp-url-no-img').style.display = 'block';
   document.getElementById('mp-file').value = '';
-
   if (p.photo && p.photo.startsWith('http')) {
-    switchTab('url');
+    window.switchTab('url');
     document.getElementById('mp-url-input').value = p.photo;
     document.getElementById('mp-url-preview').src = p.photo;
     document.getElementById('mp-url-preview').style.display = 'block';
     document.getElementById('mp-url-no-img').style.display = 'none';
-    fImg.style.display = 'none'; fHint.style.display = 'flex';
   } else if (p.photo) {
-    fImg.src = p.photo; fImg.style.display = 'block'; fHint.style.display = 'none';
-  } else {
-    fImg.style.display = 'none'; fHint.style.display = 'flex';
+    document.getElementById('mp-file-preview').src = p.photo;
+    document.getElementById('mp-file-preview').style.display = 'block';
+    document.getElementById('mp-file-hint').style.display = 'none';
   }
   document.getElementById('modal-player').classList.add('open');
-}
-function savePlayer() {
-  if (editingIdx===null) return;
-  players[editingIdx].name = document.getElementById('mp-name').value || players[editingIdx].name;
-  players[editingIdx].num  = parseInt(document.getElementById('mp-num').value) || players[editingIdx].num;
-  players[editingIdx].pos  = document.getElementById('mp-pos').value;
-  if (pendingPhoto) players[editingIdx].photo = pendingPhoto;
-  closeAll(); renderAll();
-}
+};
 
-/* ── 후보 모달 ── */
-function openSubsModal() {
+window.savePlayer = () => {
+  if (editingIdx === null) return;
+  state.players[editingIdx].name = document.getElementById('mp-name').value || state.players[editingIdx].name;
+  state.players[editingIdx].num  = parseInt(document.getElementById('mp-num').value) || state.players[editingIdx].num;
+  state.players[editingIdx].pos  = document.getElementById('mp-pos').value;
+  if (pendingPhoto) state.players[editingIdx].photo = pendingPhoto;
+  pushToFirebase();
+  closeAll();
+};
+
+// ── 후보 모달
+window.openSubsModal = () => {
   renderSubsList();
   document.getElementById('add-form').style.display = 'none';
   document.getElementById('modal-subs').classList.add('open');
-}
-function renderSubsList() {
+};
+window.saveAndCloseSubs = () => { pushToFirebase(); closeAll(); };
+
+window.renderSubsList = () => {
   const el = document.getElementById('subs-list'); el.innerHTML = '';
-  subs.forEach((s,i) => {
+  (state.subs || []).forEach((s,i) => {
     const div = document.createElement('div');
     div.className = 'sub-item';
     div.innerHTML = `<span class="s-num">${s.num}</span><span class="s-name">${s.name}</span><span class="s-edit" onclick="editSubInline(${i})">✏️</span><span class="s-del" onclick="deleteSub(${i})">✕</span>`;
     el.appendChild(div);
   });
-}
-function editSubInline(i) {
+};
+window.editSubInline = (i) => {
   const el = document.getElementById('subs-list').children[i];
-  const s = subs[i];
+  const s = state.subs[i];
   el.innerHTML = `<div class="inline-form" style="width:100%;margin:0;"><input class="narrow" type="number" value="${s.num}" id="ei-num-${i}"><input type="text" value="${s.name}" id="ei-name-${i}"><button onclick="confirmEditSub(${i})">저장</button></div>`;
-}
-function confirmEditSub(i) {
-  subs[i].num  = parseInt(document.getElementById(`ei-num-${i}`).value) || subs[i].num;
-  subs[i].name = document.getElementById(`ei-name-${i}`).value || subs[i].name;
-  renderSubsList(); renderAll();
-}
-function deleteSub(i) { subs.splice(i,1); renderSubsList(); renderAll(); }
-function toggleAddForm() {
+};
+window.confirmEditSub = (i) => {
+  state.subs[i].num  = parseInt(document.getElementById(`ei-num-${i}`).value) || state.subs[i].num;
+  state.subs[i].name = document.getElementById(`ei-name-${i}`).value || state.subs[i].name;
+  window.renderSubsList();
+};
+window.deleteSub = (i) => { state.subs.splice(i,1); window.renderSubsList(); };
+window.toggleAddForm = () => {
   const f = document.getElementById('add-form');
   f.style.display = f.style.display==='none'?'block':'none';
-  if (f.style.display==='block') { document.getElementById('new-sub-num').value=''; document.getElementById('new-sub-name').value=''; }
-}
-function addSub() {
+};
+window.addSub = () => {
   const num = parseInt(document.getElementById('new-sub-num').value);
   const name = document.getElementById('new-sub-name').value.trim();
   if (!name) return;
-  subs.push({num:isNaN(num)?0:num,name});
-  document.getElementById('add-form').style.display='none';
-  renderSubsList(); renderAll();
-}
+  state.subs.push({num:isNaN(num)?0:num, name});
+  document.getElementById('add-form').style.display = 'none';
+  window.renderSubsList();
+};
 
-/* ── 코치 모달 ── */
-function openCoachModal() {
-  document.getElementById('coach-input').value = coach;
+// ── 코치 모달
+window.openCoachModal = () => {
+  document.getElementById('coach-input').value = state.coach;
   document.getElementById('modal-coach').classList.add('open');
-}
-function saveCoach() {
+};
+window.saveCoach = () => {
   const v = document.getElementById('coach-input').value.trim();
-  if (v) coach = v;
-  closeAll(); renderAll();
-}
+  if (v) state.coach = v;
+  pushToFirebase();
+  closeAll();
+};
 
-/* ── 로고 모달 ── */
-function openLogoModal() {
+// ── 로고 모달
+window.openLogoModal = () => {
   pendingLogo = null;
-  document.getElementById('logo-teamname').value = teamName;
-  switchLogoTab('file');
+  document.getElementById('logo-teamname').value = state.teamName;
+  window.switchLogoTab('file');
   document.getElementById('logo-file-preview').style.display = 'none';
   document.getElementById('logo-file-hint').style.display = 'flex';
   document.getElementById('logo-url-input').value = '';
   document.getElementById('logo-url-preview').style.display = 'none';
   document.getElementById('logo-url-no-img').style.display = 'block';
   document.getElementById('logo-file-input').value = '';
-  if (logoData) {
-    if (logoData.startsWith('http')) {
-      switchLogoTab('url');
-      document.getElementById('logo-url-input').value = logoData;
-      document.getElementById('logo-url-preview').src = logoData;
+  if (state.logoPhoto) {
+    if (state.logoPhoto.startsWith('http')) {
+      window.switchLogoTab('url');
+      document.getElementById('logo-url-input').value = state.logoPhoto;
+      document.getElementById('logo-url-preview').src = state.logoPhoto;
       document.getElementById('logo-url-preview').style.display = 'block';
       document.getElementById('logo-url-no-img').style.display = 'none';
     } else {
-      const img = document.getElementById('logo-file-preview');
-      img.src = logoData; img.style.display = 'block';
+      document.getElementById('logo-file-preview').src = state.logoPhoto;
+      document.getElementById('logo-file-preview').style.display = 'block';
       document.getElementById('logo-file-hint').style.display = 'none';
     }
   }
   document.getElementById('modal-logo').classList.add('open');
-}
-function saveLogo() {
+};
+window.saveLogo = () => {
   const tn = document.getElementById('logo-teamname').value.trim();
-  if (tn) teamName = tn;
-  if (pendingLogo) logoData = pendingLogo;
-  const logoEl = document.getElementById('logo-el');
-  if (logoData) {
-    logoEl.innerHTML = `<img src="${logoData}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
-  } else {
-    logoEl.innerHTML = `<div class="logo-text"><div style="font-size:9px;color:#7ab3e8;">★ ★ ★</div><div style="font-size:14px;font-weight:700;letter-spacing:0.05em;">${teamName}</div><div style="font-size:8px;color:#7ab3e8;letter-spacing:0.12em;">VOLLEYBALL</div></div>`;
-  }
+  if (tn) state.teamName = tn;
+  if (pendingLogo) state.logoPhoto = pendingLogo;
+  pushToFirebase();
   closeAll();
-}
+};
+
+window.closeAll = () => {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+  editingIdx = null; pendingPhoto = null; pendingLogo = null;
+};
 
 document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target===m) closeAll(); });
+  m.addEventListener('click', e => { if (e.target === m) window.closeAll(); });
 });
-
-renderAll();
 </script>
 </body>
 </html>
