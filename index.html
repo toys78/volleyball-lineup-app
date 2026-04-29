@@ -49,18 +49,20 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .card-bottom .num { font-size:16px; font-weight:700; color:#fff; min-width:20px; }
 .card-bottom .name { font-size:12px; color:#ddeeff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-/* ── 하단 바 ── */
-.footer-bar { position:relative; z-index:10; background:rgba(8,18,36,0.97); border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; padding:8px 14px; gap:6px; flex-wrap:wrap; }
-.footer-label { font-size:10px; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,0.3); padding:3px 9px; border-radius:4px; letter-spacing:0.07em; white-space:nowrap; cursor:pointer; transition:background 0.15s; }
+/* ── 하단 섹션 ── */
+.footer-section { position:relative; z-index:10; background:rgba(8,18,36,0.97); border-top:1px solid rgba(255,255,255,0.1); }
+.footer-block { padding:10px 14px 12px; border-bottom:1px solid rgba(255,255,255,0.07); }
+.footer-block:last-child { border-bottom:none; }
+.footer-label { display:inline-block; font-size:10px; font-weight:700; color:#fff; border:1px solid rgba(255,255,255,0.3); padding:3px 10px; border-radius:4px; letter-spacing:0.07em; margin-bottom:8px; cursor:pointer; transition:background 0.15s; }
 .footer-label:hover { background:rgba(255,255,255,0.08); }
-.footer-subs { flex:1; display:flex; flex-wrap:wrap; padding:0 8px; align-items:center; }
-.sub-chip { display:flex; align-items:center; padding:0 8px; border-right:1px solid rgba(255,255,255,0.15); cursor:pointer; }
-.sub-chip:last-child { border-right:none; }
-.sub-chip.selected { background:rgba(240,192,64,0.2); border-radius:4px; }
-.sub-text { font-size:11px; color:rgba(255,255,255,0.65); }
-.sub-chip:hover .sub-text { color:#fff; }
-.footer-coach-wrap { display:flex; align-items:center; gap:8px; cursor:pointer; }
-.coach-name { font-size:12px; color:#fff; }
+.footer-subs { display:flex; flex-wrap:wrap; gap:6px; }
+.sub-chip { display:flex; align-items:center; padding:5px 11px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:20px; cursor:pointer; transition:all 0.15s; }
+.sub-chip:hover { background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.3); }
+.sub-chip.selected { background:rgba(240,192,64,0.2); border-color:#f0c040; }
+.sub-text { font-size:12px; color:rgba(255,255,255,0.75); }
+.footer-coach-wrap { display:flex; align-items:center; gap:10px; cursor:pointer; }
+.footer-coach-wrap:hover .coach-name { color:#7ab8f5; }
+.coach-name { font-size:14px; font-weight:500; color:#fff; transition:color 0.15s; }
 
 /* ── 서브오더 섹션 ── */
 .serve-section { position:relative; z-index:10; background:rgba(8,18,36,0.9); border-top:1px solid rgba(255,255,255,0.08); padding:12px 14px; }
@@ -209,13 +211,17 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
     <span class="swap-cancel" onclick="cancelSwap()">취소</span>
   </div>
 
-  <!-- 하단 바 -->
-  <div class="footer-bar">
-    <div class="footer-label" onclick="openSubsModal()">SUBSTITUTE</div>
-    <div class="footer-subs" id="subs-bar"></div>
-    <div class="footer-label" style="margin-right:8px;" onclick="openCoachModal()">HEAD COACH</div>
-    <div class="footer-coach-wrap" onclick="openCoachModal()">
-      <div class="coach-name" id="coach-bar">-</div>
+  <!-- 하단 섹션 -->
+  <div class="footer-section">
+    <div class="footer-block">
+      <div class="footer-label" onclick="openCoachModal()">HEAD COACH</div>
+      <div class="footer-coach-wrap" onclick="openCoachModal()">
+        <div class="coach-name" id="coach-bar">-</div>
+      </div>
+    </div>
+    <div class="footer-block">
+      <div class="footer-label" onclick="openSubsModal()">SUBSTITUTE</div>
+      <div class="footer-subs" id="subs-bar"></div>
     </div>
   </div>
 
