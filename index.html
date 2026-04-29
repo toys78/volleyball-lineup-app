@@ -6,7 +6,7 @@
 <title>스타팅 라인업</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --navy:#0a1628; --blue:#1a4fa0; --gold:#b8760e; }
+:root { --navy:#0a1628; --blue:#1a4fa0; --gold:#b8760e; --pink:#c0357a; --pink-light:#e06fa0; --pink-court:#b05070; }
 body { background:#111; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:16px; font-family:'Segoe UI',sans-serif; }
 
 .wrap { background:var(--navy); border-radius:12px; position:relative; overflow:hidden; width:100%; max-width:500px; }
@@ -160,7 +160,27 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .team-tabs { position:relative; z-index:20; display:flex; margin:0 14px 0; gap:6px; padding-top:8px; }
 .team-tab { flex:1; padding:8px 0; text-align:center; font-size:13px; font-weight:600; color:rgba(255,255,255,0.4); border-radius:8px 8px 0 0; border:1px solid rgba(255,255,255,0.1); border-bottom:none; background:rgba(255,255,255,0.04); cursor:pointer; transition:all 0.2s; letter-spacing:0.05em; }
 .team-tab.active { color:#fff; background:rgba(26,79,160,0.6); border-color:rgba(90,140,220,0.4); }
+.team-tab.active.women-tab { background:rgba(192,53,122,0.6); border-color:rgba(224,111,160,0.4); }
 .team-tab .tab-icon { font-size:14px; margin-right:5px; }
+
+/* ── 여성팀 테마 ── */
+body.theme-women .pos-badge { background:#8b1a4a; color:#f4a0c8; }
+body.theme-women .badge-9 { background:#8b1a4a; }
+body.theme-women .serve-order-num { background:#c0357a; }
+body.theme-women .player-card.selected { border-color:#f0a0c8; }
+body.theme-women .sub-chip.selected { background:rgba(240,160,200,0.2); border-color:#f0a0c8; }
+body.theme-women .swap-hint { background:rgba(192,53,122,0.12); border-color:rgba(192,53,122,0.3); }
+body.theme-women .swap-hint-text { color:#f0a0c8; }
+body.theme-women .serve-item.drag-over { border-color:#f0a0c8; background:rgba(240,160,200,0.1); }
+body.theme-women .footer-label { border-color:rgba(192,53,122,0.5); }
+body.theme-women .btn-save { background:#c0357a; }
+body.theme-women .btn-save:hover { background:#a02868; }
+body.theme-women .photo-tab.active { background:#c0357a; }
+body.theme-women .inline-form button { background:#c0357a; }
+body.theme-women .url-input-wrap button { background:#c0357a; }
+body.theme-women .add-sub-btn:hover { color:#f0a0c8; }
+body.theme-women .sync-dot { background:#f06090; }
+body.theme-women .court-bg polygon:first-child { fill:#8b3060 !important; }
 </style>
 </head>
 <body>
@@ -190,7 +210,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
     <div class="team-tab active" id="tab-men" onclick="switchTeam('men')">
       <span class="tab-icon">👨</span>남성팀
     </div>
-    <div class="team-tab" id="tab-women" onclick="switchTeam('women')">
+    <div class="team-tab women-tab" id="tab-women" onclick="switchTeam('women')">
       <span class="tab-icon">👩</span>여성팀
     </div>
   </div>
@@ -441,6 +461,8 @@ window.switchTeam = (team) => {
   currentTeam = team;
   document.getElementById('tab-men').classList.toggle('active', team==='men');
   document.getElementById('tab-women').classList.toggle('active', team==='women');
+  // 테마 전환
+  document.body.classList.toggle('theme-women', team==='women');
   lineupRef = ref(db, team==='men' ? 'lineup_men' : 'lineup_women');
   state = defaultState();
   cancelSwap();
@@ -492,7 +514,13 @@ function pushToFirebase() {
 }
 
 // ── 전체 렌더
-function renderAll() { renderCourt(); renderSubsBar(); renderServeOrder(); renderLogo(); document.getElementById('coach-bar').textContent = state.coach||'-'; }
+function renderAll() { renderCourt(); renderSubsBar(); renderServeOrder(); renderLogo(); updateCourtColor(); document.getElementById('coach-bar').textContent = state.coach||'-'; }
+
+function updateCourtColor() {
+  const polygon = document.querySelector('.court-bg polygon');
+  if (!polygon) return;
+  polygon.setAttribute('fill', currentTeam === 'women' ? '#7a2545' : '#b8760e');
+}
 
 function renderLogo() {
   const el = document.getElementById('logo-el');
