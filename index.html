@@ -71,7 +71,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .serve-title .badge { font-size:9px; background:var(--blue); color:#7ab8f5; padding:2px 7px; border-radius:3px; }
 .serve-hint { font-size:10px; color:rgba(255,255,255,0.3); }
 .serve-list { display:flex; flex-direction:column; gap:6px; }
-.serve-item { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:8px 12px; cursor:grab; transition:background 0.15s, border-color 0.15s; user-select:none; }
+.serve-item { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:8px 12px; cursor:default; transition:background 0.15s, border-color 0.15s; user-select:none; touch-action:pan-y; }
 .serve-item:active { cursor:grabbing; background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); }
 .serve-item.dragging { opacity:0.4; }
 .serve-item.drag-over { border-color:#f0c040; background:rgba(240,192,64,0.1); }
@@ -82,7 +82,7 @@ body { background:#111; display:flex; justify-content:center; align-items:flex-s
 .serve-player-info { flex:1; }
 .serve-player-name { font-size:13px; color:#fff; font-weight:500; }
 .serve-player-pos { font-size:10px; color:rgba(255,255,255,0.4); margin-top:1px; }
-.serve-drag-handle { color:rgba(255,255,255,0.2); font-size:16px; }
+.serve-drag-handle { color:rgba(255,255,255,0.4); font-size:20px; padding:4px 6px; cursor:grab; touch-action:none; }
 .serve-num-badge { font-size:11px; color:#7ab8f5; font-weight:700; min-width:22px; text-align:right; }
 
 /* ── 교체 힌트 ── */
@@ -626,15 +626,30 @@ function renderServeOrder() {
       pushToFirebase();
     });
 
-    // 터치 드래그 (모바일)
-    let touchStartY = 0, touchFromIdx = 0;
-    item.addEventListener('touchstart', (e) => {
+    // 터치 드래그 (모바일) - 핸들 영역만 반응
+    let touchStartY = 0, touchFromIdx = 0, touchMoved = false, touchActive = false;
+    const handle = item.querySelector('.serve-drag-handle');
+
+    handle.addEventListener('touchstart', (e) => {
       touchStartY = e.touches[0].clientY;
       touchFromIdx = servePos;
+      touchMoved = false;
+      touchActive = true;
       item.style.opacity = '0.6';
+      e.stopPropagation();
     }, {passive:true});
-    item.addEventListener('touchend', (e) => {
+
+    handle.addEventListener('touchmove', (e) => {
+      if (!touchActive) return;
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartY);
+      if (deltaY > 8) touchMoved = true;
+    }, {passive:true});
+
+    handle.addEventListener('touchend', (e) => {
+      if (!touchActive) return;
+      touchActive = false;
       item.style.opacity = '1';
+      if (!touchMoved) return;
       const deltaY = e.changedTouches[0].clientY - touchStartY;
       const itemH  = item.offsetHeight + 6;
       const steps  = Math.round(deltaY / itemH);
